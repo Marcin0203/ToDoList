@@ -7,6 +7,42 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <ScrollView
+        android:id="@+id/loading_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/login_process"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/loading_progress"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="15dp"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
+
+            <TextView
+                android:id="@+id/loading_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="15dp"
+                android:text="@string/loadingData"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
     <ListView
         android:id="@+id/to_do_list_view"
         android:layout_width="match_parent"

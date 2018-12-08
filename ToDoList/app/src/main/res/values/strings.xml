@@ -4,10 +4,14 @@
     <string name="title">Treść:</string>
     <string name="choose_status">Wybierz status:</string>
     <string name="add">Dodaj</string>
+    <string name="loadingData">Trwa wczytywanie danych, proszę czekać…</string>
 
     <string name="delete">Usuń</string>
     <string name="changeStatusToDone">Wykonano</string>
     <string name="changeStatusToComplete">Do Wykonania</string>
+
+    <string name="buttonPositive">Zapisz</string>
+    <string name="buttonNegative">Anuluj</string>
 
     <string-array name="status_arrays">
         <item>Do Wykonania</item>

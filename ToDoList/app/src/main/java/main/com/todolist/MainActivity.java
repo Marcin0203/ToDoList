@@ -16,12 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
     private MySimpleCursorAdapter mySimpleCursorAdapter;
     private ListView listView;
-    String[] projection = {DBHelper.COLUMN_ID, DBHelper.COLUMN_TITLE, DBHelper.COLUMN_USER_ID, DBHelper.COLUMN_COMPLETED};
+    private ScrollView loadingScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +30,17 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         listView = findViewById(R.id.to_do_list_view);
+        loadingScrollView = findViewById(R.id.loading_scroll_view);
 
-        if (checkDataBase()) {
+        if (isExistingDatabase()) {
             fillList();
         }
         else {
+            loadingScrollView.setVisibility(View.VISIBLE);
             HttpClient httpClient = new HttpClient(this);
             httpClient.getJsonData();
         }
+        listView.setOnItemClickListener(new MyOnItemClickListener(this));
     }
 
     @Override
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {DBHelper.COLUMN_ID, DBHelper.COLUMN_TITLE, DBHelper.COLUMN_USER_ID, DBHelper.COLUMN_COMPLETED};
         CursorLoader cursorLoader = new CursorLoader(this,
                 MyContentProvider.URI_CONTENT, projection,
                 null, null, null);
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
         mySimpleCursorAdapter.swapCursor(null);
     }
 
-    private boolean checkDataBase() {
+    private boolean isExistingDatabase() {
         try {
             SQLiteDatabase checkDB = SQLiteDatabase.openDatabase("data/data/main.com.todolist/databases/"+DBHelper.DATABASE_NAME, null,
                     SQLiteDatabase.OPEN_READONLY);
@@ -95,10 +100,13 @@ public class MainActivity extends AppCompatActivity implements
                 R.layout.row_list, null, mapFrom, mapTo, 0);
 
         listView.setAdapter(mySimpleCursorAdapter);
+        loadingScrollView.setVisibility(View.GONE);
     }
 
     public void onClickInListView (final View view) {
-        final Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(MyContentProvider.URI_CONTENT, Integer.parseInt((String) view.getTag())), projection, null, null, null);
+        final Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(
+                MyContentProvider.URI_CONTENT, Integer.parseInt((String) view.getTag())),
+                null, null, null, null);
         cursor.moveToFirst();
         PopupMenu popupMenu = new PopupMenu(this, view);
 
@@ -137,5 +145,9 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         popupMenu.show();
+    }
+
+    public ScrollView getLoadingScrollView() {
+        return loadingScrollView;
     }
 }
