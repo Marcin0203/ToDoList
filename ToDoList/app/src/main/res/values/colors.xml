@@ -5,4 +5,10 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorCorrect">#a40bb62a</color>
     <color name="colorIncorrect">#a4b6b00b</color>
+
+    <color name="colorBackgroundAppStart">#a42549da</color>
+    <color name="colorBackgroundAppEnd">#a431d784</color>
+
+    <color name="colorBackgroundPopupStart">#73e7ad</color>
+    <color name="colorBackgroundPopupEnd">#57a185</color>
 </resources>

@@ -23,7 +23,10 @@
             android:name=".MyContentProvider"
             android:authorities="main.com.todolist.MyContentProvider"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <activity android:name=".AddElementActivity"
+            android:label="@string/add_element_name"></activity>
     </application>
 
 </manifest>

@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">To Do List</string>
+    <string name="add_element_name">Dodaj element</string>
+    <string name="title">Treść:</string>
+    <string name="choose_status">Wybierz status:</string>
+    <string name="add">Dodaj</string>
+
+    <string name="delete">Usuń</string>
+    <string name="changeStatusToDone">Wykonano</string>
+    <string name="changeStatusToComplete">Do Wykonania</string>
+
+    <string-array name="status_arrays">
+        <item>Do Wykonania</item>
+        <item>Wykonano</item>
+    </string-array>
 </resources>
