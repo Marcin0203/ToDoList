@@ -9,6 +9,7 @@
     <string name="delete">Usuń</string>
     <string name="changeStatusToDone">Wykonano</string>
     <string name="changeStatusToComplete">Do Wykonania</string>
+    <string name="multiChoiceMenuTitle">multi_choice_menu</string>
 
     <string name="buttonPositive">Zapisz</string>
     <string name="buttonNegative">Anuluj</string>

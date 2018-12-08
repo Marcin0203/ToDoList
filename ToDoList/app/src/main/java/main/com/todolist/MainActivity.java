@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements
             HttpClient httpClient = new HttpClient(this);
             httpClient.getJsonData();
         }
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new MyMultiChoiceModeListener(listView, this));
         listView.setOnItemClickListener(new MyOnItemClickListener(this));
     }
 

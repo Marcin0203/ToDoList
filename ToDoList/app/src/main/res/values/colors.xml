@@ -11,4 +11,7 @@
 
     <color name="colorBackgroundPopupStart">#73e7ad</color>
     <color name="colorBackgroundPopupEnd">#57a185</color>
+
+    <color name="colorPress">#d8696868</color>
+    <color name="colorActive">#a6a280d9</color>
 </resources>
