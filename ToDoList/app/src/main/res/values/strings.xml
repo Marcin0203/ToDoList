@@ -14,8 +14,16 @@
     <string name="buttonPositive">Zapisz</string>
     <string name="buttonNegative">Anuluj</string>
 
-    <string-array name="status_arrays">
+    <string name="labelFiltering">Filtracja:</string>
+
+    <string-array name="add_status_array">
         <item>Do Wykonania</item>
         <item>Wykonano</item>
+    </string-array>
+
+    <string-array name="filtering_status_array">
+        <item>Wszystkie</item>
+        <item>Niezakończone</item>
+        <item>Zakończone</item>
     </string-array>
 </resources>

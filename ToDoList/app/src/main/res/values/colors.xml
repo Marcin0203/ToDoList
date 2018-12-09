@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#869190</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorCorrect">#a40bb62a</color>
     <color name="colorIncorrect">#a4b6b00b</color>
+    <color name="colorText">#b8ffffff</color>
 
     <color name="colorBackgroundAppStart">#a42549da</color>
     <color name="colorBackgroundAppEnd">#a431d784</color>
 
-    <color name="colorBackgroundPopupStart">#73e7ad</color>
-    <color name="colorBackgroundPopupEnd">#57a185</color>
+    <color name="colorBackgroundPopupStart">#e1343b38</color>
+    <color name="colorBackgroundPopupEnd">#848484</color>
 
     <color name="colorPress">#d8696868</color>
     <color name="colorActive">#a6a280d9</color>
