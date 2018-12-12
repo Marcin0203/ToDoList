@@ -15,6 +15,10 @@
     <string name="buttonNegative">Anuluj</string>
 
     <string name="labelFiltering">Filtracja:</string>
+    <string name="labelSearch">Wyszukaj</string>
+    <string name="contentDescription">TODO</string>
+    <string name="labelID">ID użytkownika:</string>
+    <string name="labelTitle">Tytuł:</string>
 
     <string-array name="add_status_array">
         <item>Do Wykonania</item>

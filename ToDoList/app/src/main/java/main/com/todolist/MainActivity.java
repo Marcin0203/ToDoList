@@ -12,11 +12,15 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements
     private MySimpleCursorAdapter mySimpleCursorAdapter;
     private ListView listView;
     private ScrollView loadingScrollView;
+    private EditText searchID;
+    private EditText searchTitle;
     private Boolean statusToDO = true;
     private Boolean statusDone = true;
     private int listItems;
@@ -45,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements
         listView = findViewById(R.id.to_do_list_view);
         loadingScrollView = findViewById(R.id.loading_scroll_view);
         Spinner spinnerFiltering = findViewById(R.id.spinnerStatusFiltering);
+        searchID = findViewById(R.id.editTextID);
+        searchTitle = findViewById(R.id.editTextTitle);
 
         if (isExistingDatabase()) {
             fillList();
@@ -91,6 +99,40 @@ public class MainActivity extends AppCompatActivity implements
             checkHowElementsAndFillButtonsFooter();
         }
         catch (ArrayIndexOutOfBoundsException ignored){}
+
+        searchID.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentButton = 0;
+                loadList();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        searchTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentButton = 0;
+                loadList();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override
@@ -154,6 +196,21 @@ public class MainActivity extends AppCompatActivity implements
         loadingScrollView.setVisibility(View.GONE);
     }
 
+    public void showOrHideSearchView(View view) {
+        ImageView arrowImage = view.findViewById(R.id.arrowImage);
+        LinearLayout searchView = findViewById(R.id.searchView);
+        if (arrowImage.getRotation() == Constant.HORIZONTAL) {
+            view.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_without_bottom));
+            arrowImage.setRotation(Constant.VERTICAL);
+            searchView.setVisibility(View.VISIBLE);
+        }
+        else if (arrowImage.getRotation() == Constant.VERTICAL) {
+            view.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_search_layout));
+            arrowImage.setRotation(Constant.HORIZONTAL);
+            searchView.setVisibility(View.GONE);
+        }
+    }
+
     public void onClickButtonInListView (final View view) {
         final Cursor cursor = getContentResolver().query(ContentUris.withAppendedId(
                 MyContentProvider.URI_CONTENT, Integer.parseInt((String) view.getTag())),
@@ -207,23 +264,14 @@ public class MainActivity extends AppCompatActivity implements
         return loadingScrollView;
     }
 
-    public String getSelection() {
-        if (statusDone && statusToDO)
-            return "("+DBHelper.COLUMN_COMPLETED+"='true' or "+DBHelper.COLUMN_COMPLETED+"='false')";
-        else if (statusToDO)
-            return "("+DBHelper.COLUMN_COMPLETED+"='false'"+")";
-        else
-            return "("+DBHelper.COLUMN_COMPLETED+"='true'"+")";
-
-    }
-
     void checkHowElementsAndFillButtonsFooter() {
         Cursor cursor = getContentResolver().query(
                 MyContentProvider.URI_CONTENT,
                 null, getSelection(), null, null);
         listItems = cursor.getCount();
         buttonsFooter();
-        buttons[currentButton].setBackgroundDrawable(getResources().getDrawable(R.drawable.selected_button_page));
+        if (buttons.length > 0)
+            buttons[currentButton].setBackgroundDrawable(getResources().getDrawable(R.drawable.selected_button_page));
     }
 
     private void buttonsFooter() {
@@ -285,5 +333,39 @@ public class MainActivity extends AppCompatActivity implements
                                     .buildUpon().appendQueryParameter(MyContentProvider.QUERY_PARAMETER_OFFSET, String.valueOf(currentButton*20)).build(),
                             null, getSelection(), null, null)
             );
+    }
+
+    public String getSelection() {
+        String selection = "(";
+        if (statusDone && statusToDO)
+            selection += DBHelper.COLUMN_COMPLETED+"='true' or "+DBHelper.COLUMN_COMPLETED+"='false')";
+        else if (statusToDO)
+            selection += DBHelper.COLUMN_COMPLETED+"='false'"+")";
+        else
+            selection += DBHelper.COLUMN_COMPLETED+"='true'"+")";
+
+        if (searchID.getText().toString().length() > 0 || searchTitle.getText().length() > 0) {
+            selection += " AND (";
+            if (searchID.getText().toString().length() > 0 && searchTitle.getText().length() > 0) {
+                selection += DBHelper.COLUMN_USER_ID+"='"+searchID.getText().toString()+"' AND "
+                        +DBHelper.COLUMN_TITLE+" LIKE '%"+searchTitle.getText().toString()+"%')";
+            }
+            else if (searchID.getText().toString().length() > 0) {
+                selection += DBHelper.COLUMN_USER_ID+"='"+searchID.getText().toString()+"')";
+            }
+            else {
+                selection += DBHelper.COLUMN_TITLE+" LIKE '%"+searchTitle.getText().toString()+"%')";
+            }
+
+        }
+        return selection;
+    }
+
+    public EditText getSearchID() {
+        return searchID;
+    }
+
+    public EditText getSearchTitle() {
+        return searchTitle;
     }
 }
