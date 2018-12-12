@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -26,13 +27,15 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    private Menu menu;
+    private Boolean readJson;
     private MySimpleCursorAdapter mySimpleCursorAdapter;
     private ListView listView;
-    private ScrollView loadingScrollView;
     private EditText searchID;
     private EditText searchTitle;
     private Boolean statusToDO = true;
@@ -48,19 +51,26 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("readJson", 0);
+        try {
+            if (pref != null)
+                readJson = pref.getString("readJson", null).equals("true");
+        }
+        catch (NullPointerException e) {
+            readJson = false;
+        }
+
         listView = findViewById(R.id.to_do_list_view);
-        loadingScrollView = findViewById(R.id.loading_scroll_view);
+
         Spinner spinnerFiltering = findViewById(R.id.spinnerStatusFiltering);
         searchID = findViewById(R.id.editTextID);
         searchTitle = findViewById(R.id.editTextTitle);
 
-        if (isExistingDatabase()) {
+        if (readJson) {
             fillList();
         }
         else {
-            loadingScrollView.setVisibility(View.VISIBLE);
-            HttpClient httpClient = new HttpClient(this);
-            httpClient.getJsonData();
+            loadJson();
         }
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new MyMultiChoiceModeListener(listView, this));
@@ -87,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements
                     loadList();
                 }
                 catch (ArrayIndexOutOfBoundsException ignored){}
+                catch (NullPointerException ignored){}
             }
 
             @Override
@@ -137,7 +148,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_bar, menu);
+        this.menu = menu;
+        if (readJson)
+            getMenuInflater().inflate(R.menu.main_activity_bar, menu);
         return true;
     }
 
@@ -172,18 +185,19 @@ public class MainActivity extends AppCompatActivity implements
         mySimpleCursorAdapter.swapCursor(null);
     }
 
-    private boolean isExistingDatabase() {
-        try {
-            SQLiteDatabase checkDB = SQLiteDatabase.openDatabase("data/data/main.com.todolist/databases/"+DBHelper.DATABASE_NAME, null,
-                    SQLiteDatabase.OPEN_READONLY);
-            checkDB.close();
-            return true;
-        } catch (SQLiteException e) {
-            return false;
-        }
+    void loadJson() {
+        LinearLayout linearLayoutFiltering = findViewById(R.id.linearLayoutFiltering);
+        LinearLayout linearLayoutSearch = findViewById(R.id.linearLayoutSearch);
+        ScrollView loadingScrollView = findViewById(R.id.loading_scroll_view);
+        linearLayoutFiltering.setVisibility(View.GONE);
+        linearLayoutSearch.setVisibility(View.GONE);
+        loadingScrollView.setVisibility(View.VISIBLE);
+        HttpClient httpClient = new HttpClient(this);
+        httpClient.getJsonData();
     }
 
     void fillList() {
+        ScrollView loadingScrollView = findViewById(R.id.loading_scroll_view);
         getLoaderManager().initLoader(0, null, this);
 
         String[] mapFrom = new String[] {DBHelper.COLUMN_COMPLETED, DBHelper.COLUMN_USER_ID, DBHelper.COLUMN_TITLE};
@@ -194,6 +208,10 @@ public class MainActivity extends AppCompatActivity implements
 
         listView.setAdapter(mySimpleCursorAdapter);
         loadingScrollView.setVisibility(View.GONE);
+    }
+
+    public void refreshJson(View view) {
+        loadJson();
     }
 
     public void showOrHideSearchView(View view) {
@@ -258,10 +276,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         popupMenu.show();
-    }
-
-    public ScrollView getLoadingScrollView() {
-        return loadingScrollView;
     }
 
     void checkHowElementsAndFillButtonsFooter() {
@@ -361,11 +375,24 @@ public class MainActivity extends AppCompatActivity implements
         return selection;
     }
 
-    public EditText getSearchID() {
-        return searchID;
-    }
+    public void setReadJson(Boolean readJson) {
+        this.readJson = readJson;
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("readJson", 0);
+        SharedPreferences.Editor editor = pref.edit();
 
-    public EditText getSearchTitle() {
-        return searchTitle;
+        editor.putString("readJson", readJson.toString());
+        editor.apply();
+
+        LinearLayout linearLayoutFiltering = findViewById(R.id.linearLayoutFiltering);
+        LinearLayout linearLayoutSearch = findViewById(R.id.linearLayoutSearch);
+        TextView textViewNullJson = findViewById(R.id.textViewNullJson);
+        Button buttonNullJson = findViewById(R.id.buttonNullJson);
+
+        linearLayoutFiltering.setVisibility(View.VISIBLE);
+        linearLayoutSearch.setVisibility(View.VISIBLE);
+        textViewNullJson.setVisibility(View.GONE);
+        buttonNullJson.setVisibility(View.GONE);
+
+        getMenuInflater().inflate(R.menu.main_activity_bar, menu);
     }
 }

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">To Do List</string>
     <string name="add_element_name">Dodaj element</string>
+    <string name="null_json">Błąd pobierania danych. Sprawdź połączenie z Internetem i spróbuj ponownie.</string>
+    <string name="try_again">Spróbuj ponownie</string>
     <string name="title">Treść:</string>
     <string name="choose_status">Wybierz status:</string>
     <string name="add">Dodaj</string>

@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayoutFiltering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_filtering_layout"
@@ -35,6 +36,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayoutSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_search_layout"
@@ -114,6 +116,26 @@
                 android:layout_marginLeft="15dp" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewNullJson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:text="@string/null_json"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/buttonNullJson"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_radius"
+        android:onClick="refreshJson"
+        android:padding="10dp"
+        android:text="@string/try_again"
+        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/loading_scroll_view"
