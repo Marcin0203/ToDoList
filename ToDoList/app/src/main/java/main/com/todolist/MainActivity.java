@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     currentButton = 0;
                     checkHowElementsAndFillButtonsFooter();
-                    loadList(false);
+                    loadList();
                 }
                 catch (ArrayIndexOutOfBoundsException ignored){}
             }
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        loadList(true);
+        loadList();
     }
 
     @Override
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
                                 Integer.parseInt((String)view.getTag())),
                                 null, null);
 
-                        loadList(true);
+                        loadList();
                         return true;
 
                     case R.id.popupMenu_item_status:
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements
                                 MyContentProvider.URI_CONTENT, cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_ID))),
                                 values, null, null);
 
-                        loadList(true);
+                        loadList();
                         return true;
                 }
                 return false;
@@ -277,14 +277,13 @@ public class MainActivity extends AppCompatActivity implements
         );
     }
 
-    public void loadList(Boolean refreshButtonFooter) {
-        mySimpleCursorAdapter.swapCursor(
-                getContentResolver().query(
-                        ContentUris.withAppendedId(MyContentProvider.URI_LIMIT, itemsToView)
-                                .buildUpon().appendQueryParameter(MyContentProvider.QUERY_PARAMETER_OFFSET, String.valueOf(currentButton*20)).build(),
-                        null, getSelection(), null, null)
-        );
-        if (refreshButtonFooter)
+    public void loadList() {
             checkHowElementsAndFillButtonsFooter();
+            mySimpleCursorAdapter.swapCursor(
+                    getContentResolver().query(
+                            ContentUris.withAppendedId(MyContentProvider.URI_LIMIT, itemsToView)
+                                    .buildUpon().appendQueryParameter(MyContentProvider.QUERY_PARAMETER_OFFSET, String.valueOf(currentButton*20)).build(),
+                            null, getSelection(), null, null)
+            );
     }
 }
